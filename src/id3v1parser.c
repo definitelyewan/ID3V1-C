@@ -1,5 +1,8 @@
 #include "id3v1.h"
-
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
 
 Id3v1 *Id3v1Tag(const char* filePath){
 

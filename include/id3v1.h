@@ -2,12 +2,9 @@
 #define ID3V1
 
 //built according to https://id3.org/ID3v1
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-
+#ifdef __cplusplus
+extern "C"{
+#endif
 
 #define ID3V1_MAXBYTES 128
 #define ID3V1_TAGLENGTH 30
@@ -232,4 +229,9 @@ void setGenreId3v1(Genre genre, Id3v1 *tag);
 
 void freeId3v1Tag(Id3v1 *toFree);
 void writeId3v1(char *filePath, Id3v1 *tag);
+
+#ifdef __cplusplus
+} //extern c end
+#endif
+
 #endif

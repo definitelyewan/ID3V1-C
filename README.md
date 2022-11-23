@@ -29,6 +29,7 @@ make staticParser
 ## Example
 ```C
 #include <stdio.h>
+#include <stdlib.h>
 #include "id3v1.h"
 
 int main(int argc, char *argv[]){
