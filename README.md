@@ -26,7 +26,7 @@ make sharedParser
 ```bash
 make staticParser
 ```
-##Example
+## Example
 ```C
 #include <stdio.h>
 #include "id3v1.h"
