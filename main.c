@@ -35,7 +35,7 @@ int main(int argc, char *argv[]){
     printf("Genre  [%s]\n",genreFromTable(data->genre));
 
     //write tags to file
-    writeId3v1("Beetlebumcopy.mp3",data);
+    writeId3v1(argv[2],data);
     freeId3v1Tag(data);
 
     printf("-----------------------------------------data in file\n");
