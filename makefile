@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -g
+CFLAGS = -Wall -std=c99
 LDFLAGS= -L.
 
 INC = include/
