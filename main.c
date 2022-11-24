@@ -3,7 +3,6 @@
 #include "id3v1.h"
 
 int main(int argc, char *argv[]){
-    
 
     if(argc != 3){
         printf("./main file1.mp3 file2.mp3\n");
@@ -17,8 +16,9 @@ int main(int argc, char *argv[]){
     printf("Album  [%s]\n",data->albumTitle);
     printf("Year   [%d]\n",data->year);
     printf("Comment[%s]\n",data->comment);
+    printf("Track# [%d]\n",data->trackNumber);
     printf("Genre  [%s]\n",genreFromTable(data->genre));
-
+    
     printf("-----------------------------------------data to write\n");
     //change tags to 
     setTitleId3v1("new title",data);
@@ -26,6 +26,7 @@ int main(int argc, char *argv[]){
     setAlbumId3v1("new album",data);
     setYearId3v1(2022,data);
     setCommentId3v1("new comment",data);
+    setTrackId3v1(60,data);
     setGenreId3v1(DUBSTEP,data);
 
     printf("Song   [%s]\n",data->title);
@@ -33,6 +34,7 @@ int main(int argc, char *argv[]){
     printf("Album  [%s]\n",data->albumTitle);
     printf("Year   [%d]\n",data->year);
     printf("Comment[%s]\n",data->comment);
+    printf("Track# [%d]\n",data->trackNumber);
     printf("Genre  [%s]\n",genreFromTable(data->genre));
 
     //write tags to file
@@ -46,6 +48,8 @@ int main(int argc, char *argv[]){
     printf("Album  [%s]\n",data2->albumTitle);
     printf("Year   [%d]\n",data2->year);
     printf("Comment[%s]\n",data2->comment);
+    printf("Track# [%d]\n",data2->trackNumber);
     printf("Genre  [%s]\n",genreFromTable(data2->genre));
     freeId3v1Tag(data2);
+
 }

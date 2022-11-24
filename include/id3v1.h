@@ -213,6 +213,7 @@ typedef struct _Id3v1{
     char *artist;
     char *albumTitle;
     int year;
+    int trackNumber;
     char *comment;
     Genre genre;
 }Id3v1;
@@ -226,6 +227,7 @@ void setAlbumId3v1(char *album, Id3v1 *tag);
 void setYearId3v1(int year, Id3v1 *tag);
 void setCommentId3v1(char *comment, Id3v1 *tag);
 void setGenreId3v1(Genre genre, Id3v1 *tag);
+void setTrackId3v1(int trackNumber, Id3v1 *tag);
 
 void freeId3v1Tag(Id3v1 *toFree);
 void writeId3v1(char *filePath, Id3v1 *tag);
