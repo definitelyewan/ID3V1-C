@@ -4,7 +4,7 @@ ID3V1 C is a small library written in C based on the [1996s version 1 and 1997s 
 Check the provided License for use and redistribution details.
 
 ## Functionality
-- supports song name, artist name, album name, year, comment, and genre
+- supports song name, artist name, album name, year, comment, track number, and genre
 - read all supported tags
 - write all suppoted tags
 
