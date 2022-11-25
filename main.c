@@ -11,6 +11,11 @@ int main(int argc, char *argv[]){
 
     //read tags from the first file
     Id3v1 *data =  Id3v1Tag(argv[1]);
+    if(data == NULL){
+        printf("Error creating ID3V1 struct");
+        exit(EXIT_FAILURE);
+    }
+
     printf("Song   [%s]\n",data->title);
     printf("Artist [%s]\n",data->artist);
     printf("Album  [%s]\n",data->albumTitle);
@@ -43,6 +48,11 @@ int main(int argc, char *argv[]){
 
     printf("-----------------------------------------data in file\n");
     Id3v1 *data2 = Id3v1Tag(argv[2]);
+    if(data2 == NULL){
+        printf("Error creating ID3V1 struct");
+        exit(EXIT_FAILURE);
+    }
+
     printf("Song   [%s]\n",data2->title);
     printf("Artist [%s]\n",data2->artist);
     printf("Album  [%s]\n",data2->albumTitle);

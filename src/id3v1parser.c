@@ -10,22 +10,22 @@ Id3v1 *Id3v1Tag(const char* filePath){
     int trackno = 0;
     
     //make sure the file can really be read
-    if((fp = fopen(filePath,"rb")) == 0){
+    if((fp = fopen(filePath, "rb")) == NULL){
         return NULL;
     }
 
     //seek to the start of metadata
-    if((fseek(fp,-ID3V1_MAXBYTES,SEEK_END))){
+    if((fseek(fp, -ID3V1_MAXBYTES, SEEK_END)) != 0){
         fclose(fp);
         return NULL;
     }
 
-    if((fread(id3Bytes,ID3V1_MAXBYTES,1,fp)) != 1){
+    if((fread(id3Bytes, ID3V1_MAXBYTES, 1, fp)) != 1){
         fclose(fp);
         return NULL;
     }
 
-    if(strncmp(id3Bytes,"TAG",3)){
+    if(strncmp(id3Bytes, "TAG",3)){
         fclose(fp);
         return NULL;
     }
@@ -35,29 +35,29 @@ Id3v1 *Id3v1Tag(const char* filePath){
     unsigned char *currTag = (unsigned char *)id3Bytes + 3;
 
     //get song title and set index for next tag
-    char *holdTitle = malloc(sizeof(char)*ID3V1_TAGLENGTH + 1);
-    strncpy(holdTitle,(char *)currTag,ID3V1_TAGLENGTH);
+    char *holdTitle = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
+    strncpy(holdTitle, (char *)currTag, ID3V1_TAGLENGTH);
     holdTitle[ID3V1_TAGLENGTH] = '\0';
     newMetadata->title = holdTitle;
     currTag = currTag + ID3V1_TAGLENGTH;
 
     //get artist and set index for next tag
-    char *holdArtist = malloc(sizeof(char)*ID3V1_TAGLENGTH + 1);
-    strncpy(holdArtist,(char *)currTag,ID3V1_TAGLENGTH);
+    char *holdArtist = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
+    strncpy(holdArtist, (char *)currTag, ID3V1_TAGLENGTH);
     holdArtist[ID3V1_TAGLENGTH] = '\0';
     newMetadata->artist = holdArtist;
     currTag = currTag + ID3V1_TAGLENGTH;
 
     //get album title and set index for next tag
-    char *holdAlbum = malloc(sizeof(char)*ID3V1_TAGLENGTH + 1);
-    strncpy(holdAlbum,(char *)currTag,ID3V1_TAGLENGTH);
+    char *holdAlbum = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
+    strncpy(holdAlbum, (char *)currTag, ID3V1_TAGLENGTH);
     holdAlbum[ID3V1_TAGLENGTH] = '\0';
     newMetadata->albumTitle = holdAlbum;
     currTag = currTag + ID3V1_TAGLENGTH;
 
     //get year and set index for next tag
     char four[4];
-    strncpy(four,(char *)currTag,4);
+    strncpy(four, (char *)currTag, 4);
     four[4] = '\0';
     if(atoi(four)){
         newMetadata->year = atoi(four);
@@ -73,8 +73,8 @@ Id3v1 *Id3v1Tag(const char* filePath){
     }
 
     //get comment and set index for next tag
-    char *holdComment = malloc(sizeof(char)*ID3V1_TAGLENGTH + 1);
-    strncpy(holdComment,(char *)currTag,ID3V1_TAGLENGTH);
+    char *holdComment = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
+    strncpy(holdComment, (char *)currTag, ID3V1_TAGLENGTH);
     holdComment[ID3V1_TAGLENGTH] = '\0';
     newMetadata->comment = holdComment;
     currTag = currTag + ID3V1_TAGLENGTH - trackno;
@@ -625,34 +625,71 @@ void writeId3v1(char *filePath, Id3v1 *tag){
     if(!tag){
         return;
     }
+
     if(filePath == NULL){
         return;
     }
     
     FILE *fp = NULL;
+    char isTag[4];
 
-    if((fp = fopen(filePath,"r+b")) == NULL){
+    if((fp = fopen(filePath, "r+b")) == NULL){
         return;
     }
 
     //file size
-    fseek(fp,0L,SEEK_END);
+    if(fseek(fp ,0L, SEEK_END)){
+        fclose(fp);
+        return;
+    }
     int index = ftell(fp);
     rewind(fp);
 
-    if((fseek(fp,index - ID3V1_MAXBYTES,SEEK_SET)) != 0){
+    if((fseek(fp, index - ID3V1_MAXBYTES, SEEK_SET)) != 0){
         fclose(fp);
         return;
     }
 
+    //check to see if the file thats being written to has ID3 metadata
+    if((fread(isTag, 3, 1, fp)) != 1){
+        fclose(fp);
+        return;
+    }
+
+    if(strncmp("TAG", isTag, 3)){
+
+        //open file in append mode
+        fclose(fp);
+        if((fp = fopen(filePath, "a+b")) == 0){
+            return; 
+        }
+
+        if((fseek(fp, index, SEEK_SET)) != 0){
+            fclose(fp);
+            return;
+        }
+    }
+    
     //write TAG onto new file so its marked as ID3 then write tags
-    fwrite("TAG",sizeof(char),sizeof(char) * 3,fp);
+    if((fwrite("TAG", sizeof(char),sizeof(char) * 3, fp)) == 0){
+        fclose(fp);
+        return;
+    }
     
-    fwrite(tag->title,1,sizeof(char) * ID3V1_TAGLENGTH, fp);
+    if((fwrite(tag->title, 1, sizeof(char) * ID3V1_TAGLENGTH, fp)) == 0){
+        fclose(fp);
+        return;
+    }
     
-    fwrite(tag->artist,1,sizeof(char) * ID3V1_TAGLENGTH, fp);
+    if((fwrite(tag->artist, 1, sizeof(char) * ID3V1_TAGLENGTH, fp)) == 0){
+        fclose(fp);
+        return;
+    }
     
-    fwrite(tag->albumTitle,1,sizeof(char) * ID3V1_TAGLENGTH, fp);
+    if((fwrite(tag->albumTitle, 1, sizeof(char) * ID3V1_TAGLENGTH, fp)) == 0){
+        fclose(fp);
+        return;
+    }
 
     //year conversion
     int n = log10(tag->year) + 1;
@@ -663,7 +700,11 @@ void writeId3v1(char *filePath, Id3v1 *tag){
         numberArray[i] = (tag->year % 10) + '0';
     }
 
-    fwrite(numberArray,1,sizeof(char) * 4, fp);
+    if((fwrite(numberArray, 1, sizeof(char) * 4, fp)) == 0){
+        fclose(fp);
+        free(numberArray);
+        return;
+    }
     free(numberArray);
 
     int trackno = 0;
@@ -672,14 +713,20 @@ void writeId3v1(char *filePath, Id3v1 *tag){
         trackno = 2;
     }
 
-    fwrite(tag->comment,1,sizeof(char) * (ID3V1_TAGLENGTH - trackno), fp);
+    if((fwrite(tag->comment, 1,sizeof(char) * (ID3V1_TAGLENGTH - trackno), fp)) == 0){
+        fclose(fp);
+        return;
+    }
 
     if(trackno){
         fputc(0,fp);
-        fputc(tag->trackNumber,fp);
+        fputc(tag->trackNumber, fp);
     }
 
-    fwrite(&tag->genre,1,sizeof(char), fp);
+    if((fwrite(&tag->genre, 1, sizeof(char), fp)) == 0){
+        fclose(fp);
+        return;
+    }
     
     fclose(fp);
 }
