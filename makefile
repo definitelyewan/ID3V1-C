@@ -11,10 +11,10 @@ ID3V1_OBJ_FILES = $(patsubst src/id3v1%.c,bin/id3v1%.o,$(ID3V1_SRC_FILES))
 
 sharedParser: $(BIN)libid3v1.so
 
-staticParser: $(SRC)id3v1parser.c $(INC)id3v1*.h
-	$(CC) $(CFLAGS) -I$(INC) $(SRC)id3v1parser.c -lm -c -o $(BIN)libid3v1.o
+staticParser: $(ID3V1_OBJ_FILES) $(INC)id3v1*.h
+	$(CC) $(CFLAGS) -I$(INC) $(ID3V1_OBJ_FILES) -lm -c -o $(BIN)libid3v1.o
 
-main: main.c $(BIN)id3v1parser.o $(INC)id3v1*.h
+main: main.c $(ID3V1_OBJ_FILES) $(INC)id3v1*.h
 	$(CC) $(CFLAGS) main.c $(ID3V1_OBJ_FILES) -I$(INC) -o main -lm
 
 $(BIN)libid3v1.so: $(ID3V1_OBJ_FILES)
