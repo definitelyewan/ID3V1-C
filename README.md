@@ -20,6 +20,7 @@ Check the provided License for use and redistribution details.
 - void setTrackId3v1(int trackNumber, Id3v1 *tag);
 - void freeId3v1Tag(Id3v1 *toFree);
 - void writeId3v1(char *filePath, Id3v1 *tag);
+- char *id3v1ToJSON(Id3v1 *tag)
 
 ## Building 
 
