@@ -25,7 +25,7 @@ Id3v1 *Id3v1Tag(const char* filePath){
         return NULL;
     }
 
-    if(strncmp(id3Bytes, "TAG",3)){
+    if(strncmp(id3Bytes, "TAG", 3)){
         fclose(fp);
         return NULL;
     }
@@ -36,22 +36,19 @@ Id3v1 *Id3v1Tag(const char* filePath){
 
     //get song title and set index for next tag
     char *holdTitle = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
-    strncpy(holdTitle, (char *)currTag, ID3V1_TAGLENGTH);
-    holdTitle[ID3V1_TAGLENGTH] = '\0';
+    memcpy(holdTitle, currTag, ID3V1_TAGLENGTH);
     newMetadata->title = holdTitle;
     currTag = currTag + ID3V1_TAGLENGTH;
 
     //get artist and set index for next tag
     char *holdArtist = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
-    strncpy(holdArtist, (char *)currTag, ID3V1_TAGLENGTH);
-    holdArtist[ID3V1_TAGLENGTH] = '\0';
+    memcpy(holdArtist, currTag, ID3V1_TAGLENGTH);
     newMetadata->artist = holdArtist;
     currTag = currTag + ID3V1_TAGLENGTH;
 
     //get album title and set index for next tag
     char *holdAlbum = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
-    strncpy(holdAlbum, (char *)currTag, ID3V1_TAGLENGTH);
-    holdAlbum[ID3V1_TAGLENGTH] = '\0';
+    memcpy(holdAlbum, currTag, ID3V1_TAGLENGTH);
     newMetadata->albumTitle = holdAlbum;
     currTag = currTag + ID3V1_TAGLENGTH;
 
@@ -74,8 +71,7 @@ Id3v1 *Id3v1Tag(const char* filePath){
 
     //get comment and set index for next tag
     char *holdComment = calloc(ID3V1_TAGLENGTH + 1, sizeof(char));
-    strncpy(holdComment, (char *)currTag, ID3V1_TAGLENGTH);
-    holdComment[ID3V1_TAGLENGTH] = '\0';
+    memcpy(holdComment, currTag, ID3V1_TAGLENGTH);
     newMetadata->comment = holdComment;
     currTag = currTag + ID3V1_TAGLENGTH - trackno;
 
